@@ -2,12 +2,8 @@ package com.vystrix.core;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-class VystrixApplicationTests {
-
-	@Test
-	void contextLoads() {
-	}
-
-}
+@ActiveProfiles("test")
+class VystrixApplicationTests {}

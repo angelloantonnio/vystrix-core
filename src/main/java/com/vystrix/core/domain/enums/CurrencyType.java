@@ -1,7 +1,9 @@
 package com.vystrix.core.domain.enums;
 
 public enum CurrencyType {
-    USD,
-    EUR,
-    BRL
+    USD("USD"),
+    EUR("EUR"),
+    BRL("BRL");
+
+    CurrencyType(String currency) {}
 }
