@@ -7,8 +7,7 @@ import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public record TransactionCreateDTO(
-        @NotNull UUID accountId,
+public record TransactionRequestDTO(
         @NotNull @Positive BigDecimal amount,
         @NotNull TransactionType transactionType,
         String description

@@ -38,8 +38,7 @@ public class Account {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 

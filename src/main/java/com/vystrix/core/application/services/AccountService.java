@@ -1,6 +1,7 @@
 package com.vystrix.core.application.services;
 
 import com.vystrix.core.application.dto.AccountDTO;
+import com.vystrix.core.application.exception.InsufficientBalanceException;
 import com.vystrix.core.application.mapper.AccountMapper;
 import com.vystrix.core.domain.entities.Account;
 import com.vystrix.core.domain.entities.User;
@@ -31,6 +32,21 @@ public class AccountService {
     protected AccountDTO createAccount(User user){
         Account userAccount = buildAccount(user);
         return accountMapper.toDTO(accountRepository.save(userAccount));
+    }
+
+    @Transactional
+    protected void creditToAccount(Account account, BigDecimal amount){
+        BigDecimal newBalance = account.getBalance().add(amount);
+        account.setBalance(newBalance);
+        accountRepository.save(account);
+    }
+
+    @Transactional
+    protected void debitToAccount(Account account, BigDecimal amount){
+        if(amount.compareTo(account.getBalance()) > 0) throw new InsufficientBalanceException();
+        BigDecimal newBalance = account.getBalance().subtract(amount);
+        account.setBalance(newBalance);
+        accountRepository.save(account);
     }
 
     private Account buildAccount(User user){

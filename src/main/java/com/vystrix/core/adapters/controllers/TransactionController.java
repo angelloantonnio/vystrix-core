@@ -1,8 +1,8 @@
 package com.vystrix.core.adapters.controllers;
 
-import com.vystrix.core.application.dto.TransactionDTO;
+import com.vystrix.core.application.dto.TransactionResponseDTO;
 import com.vystrix.core.application.services.TransactionService;
-import com.vystrix.core.domain.dto.TransactionCreateDTO;
+import com.vystrix.core.domain.dto.TransactionRequestDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,13 +20,18 @@ import java.util.UUID;
 public class TransactionController {
     private final TransactionService transactionService;
 
-    @GetMapping("/account/{accountId}")
-    public ResponseEntity<List<TransactionDTO>> getTransactionByAccountId(@PathVariable UUID accountId){
+    @GetMapping("/account/id/{accountId}")
+    public ResponseEntity<List<TransactionResponseDTO>> getTransactionByAccountId(@PathVariable UUID accountId){
         return ResponseEntity.ok(transactionService.getTransactionByAccountId(accountId));
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<List<TransactionResponseDTO>> getUserTransaction(){
+        return ResponseEntity.ok(transactionService.getUserTransaction());
+    }
+
     @PostMapping
-    public ResponseEntity<TransactionDTO> createTransaction(@Valid @RequestBody TransactionCreateDTO transactionCreateDTO){
-        return ResponseEntity.status(HttpStatus.CREATED).body(transactionService.createTransaction(transactionCreateDTO));
+    public ResponseEntity<TransactionResponseDTO> createTransaction(@Valid @RequestBody TransactionRequestDTO transactionRequestDTO){
+        return ResponseEntity.status(HttpStatus.CREATED).body(transactionService.createTransaction(transactionRequestDTO));
     }
 }

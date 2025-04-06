@@ -1,6 +1,7 @@
 package com.vystrix.core.infrastructure.security;
 
 import com.vystrix.core.infrastructure.exception.CustomSecurityExceptionHandler;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -17,21 +18,24 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+    private final SecurityFilter securityFilter;
+    private final CustomSecurityExceptionHandler handler;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, SecurityFilter securityFilter,
-                                                   CustomSecurityExceptionHandler handler) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.POST, "/auth/login", "/users").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/transactions/account/id/**").hasAuthority("ROLE_ADMIN")
+                        .anyRequest().authenticated()
+                )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(handler)
                         .accessDeniedHandler(handler)
-                )
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/auth/login", "/users").permitAll()
-                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

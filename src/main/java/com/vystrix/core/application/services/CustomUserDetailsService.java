@@ -3,12 +3,16 @@ package com.vystrix.core.application.services;
 import com.vystrix.core.domain.entities.User;
 import com.vystrix.core.infrastructure.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
 
         return new org.springframework.security.core.userdetails.User(
-                user.getUsername(), user.getPassword(), Collections.emptyList()
+                user.getUsername(), user.getPassword(), user.getAuthorities()
         );
     }
 }

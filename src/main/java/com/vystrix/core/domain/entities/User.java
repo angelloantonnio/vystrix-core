@@ -13,12 +13,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-
-import static com.vystrix.core.domain.enums.UserRole.USER;
 
 @Entity
 @Table(name = "users")
@@ -32,8 +29,9 @@ public class User implements UserDetails {
     @Column(unique = true, nullable = false)
     private UUID id;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Account> accounts = new ArrayList<>();
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @JoinColumn(nullable = false)
+    private Account account;
 
     @Column(nullable = false, length = 100)
     private String name;

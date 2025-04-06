@@ -9,8 +9,15 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+    open-in-view: true
 
 api:
   security:
     token:
       secret: ${SECRET_TOKEN}
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG

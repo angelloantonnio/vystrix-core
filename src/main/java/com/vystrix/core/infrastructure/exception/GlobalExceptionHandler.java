@@ -1,5 +1,7 @@
-package com.vystrix.core.application.exception;
+package com.vystrix.core.infrastructure.exception;
 
+import com.vystrix.core.application.exception.ForbiddenOperationException;
+import com.vystrix.core.application.exception.InsufficientBalanceException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
@@ -23,6 +25,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EntityExistsException.class)
     public ResponseEntity<Map<String, String>> handleEntityExists(EntityExistsException ex){
         return buildResponse(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    @ExceptionHandler(ForbiddenOperationException.class)
+    public ResponseEntity<Map<String, String>> handleForbiddenOperation(ForbiddenOperationException ex) {
+        return buildResponse(HttpStatus.FORBIDDEN, ex.getMessage());
+    }
+
+    @ExceptionHandler(InsufficientBalanceException.class)
+    public ResponseEntity<Map<String, String>> handleInsufficientBalance(InsufficientBalanceException ex) {
+        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

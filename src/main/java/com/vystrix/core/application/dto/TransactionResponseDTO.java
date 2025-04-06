@@ -6,11 +6,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record TransactionDTO(
+public record TransactionResponseDTO(
         UUID id,
-        UUID accountId,
         BigDecimal amount,
         TransactionType transactionType,
-        String description,
-        LocalDateTime timestamp
+        String description
 ) {}
