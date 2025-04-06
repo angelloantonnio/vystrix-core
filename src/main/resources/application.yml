@@ -1,12 +1,16 @@
 spring:
   datasource:
-    url: ${url}
-    username: ${username}
-    password: ${password}
+    url: ${URL_DATABASE}
+    username: ${USERNAME_DATABASE}
+    password: ${PASSWORD_DATABASE}
     driver-class-name: org.postgresql.Driver
 
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
     show-sql: true
+
+api:
+  security:
+    token:
+      secret: ${SECRET_TOKEN}

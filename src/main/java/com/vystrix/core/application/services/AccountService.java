@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -20,19 +21,23 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
 
-    public AccountDTO getAccountById(Long id){
+    public AccountDTO getAccountById(UUID id){
         return accountRepository.findById(id)
-                .map(account -> new AccountDTO(account.getId(), account.getBalance(), account.getCurrency(), account.getCreatedAt()))
+                .map(accountMapper::toDTO)
                 .orElseThrow(() -> new EntityNotFoundException("Conta não encontrada!"));
     }
 
     @Transactional
     protected AccountDTO createAccount(User user){
-        Account account = new Account();
-        account.setBalance(BigDecimal.ZERO);
-        account.setCurrency(CurrencyType.BRL);
-        account.setUser(user);
+        Account userAccount = buildAccount(user);
+        return accountMapper.toDTO(accountRepository.save(userAccount));
+    }
 
-        return accountMapper.toDTO(accountRepository.save(account));
+    private Account buildAccount(User user){
+        return new Account(
+                BigDecimal.ZERO,
+                CurrencyType.BRL,
+                user
+        );
     }
 }

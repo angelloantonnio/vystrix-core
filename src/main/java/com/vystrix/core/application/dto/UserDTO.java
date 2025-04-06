@@ -1,10 +1,12 @@
 package com.vystrix.core.application.dto;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public record UserDTO(
-        Long id,
+        UUID id,
         String name,
         String email,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt
 ) {}

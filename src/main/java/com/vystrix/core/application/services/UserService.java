@@ -6,14 +6,21 @@ import com.vystrix.core.application.dto.UserDTO;
 import com.vystrix.core.application.mapper.UserMapper;
 import com.vystrix.core.domain.dto.UserCreateDTO;
 import com.vystrix.core.domain.entities.User;
+import com.vystrix.core.domain.enums.UserRole;
 import com.vystrix.core.infrastructure.repositories.UserRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
+import static com.vystrix.core.domain.enums.UserRole.USER;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -22,7 +29,7 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public UserDTO getUserById(Long id){
+    public UserDTO getUserById(UUID id){
         return userRepository.findById(id)
                 .map(userMapper::toDTO)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado!"));
@@ -34,9 +41,16 @@ public class UserService {
             throw new EntityExistsException("E-mail já cadastrado!");
         }
 
-        User savedUser = userRepository.save(userMapper.toEntity(userCreateDTO, passwordEncoder));
+        User user = userMapper.toEntity(userCreateDTO, passwordEncoder);
+        assignDefaultRole(user);
+
+        User savedUser = userRepository.save(user);
         AccountDTO accountDTO = accountService.createAccount(savedUser);
 
         return userMapper.toUserAccountDTO(savedUser, accountDTO);
+    }
+
+    private void assignDefaultRole(User user){
+        user.setRole(USER);
     }
 }

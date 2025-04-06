@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +21,7 @@ public class TransactionService {
     private final AccountRepository accountRepository;
     private final TransactionMapper transactionMapper;
 
-    public List<TransactionDTO> getTransactionByAccountId(Long accountId){
+    public List<TransactionDTO> getTransactionByAccountId(UUID accountId){
         return transactionRepository.findByAccountId(accountId)
                 .stream()
                 .map(transactionMapper::toDTO)

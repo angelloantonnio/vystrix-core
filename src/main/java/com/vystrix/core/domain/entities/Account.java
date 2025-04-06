@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "accounts")
@@ -21,8 +22,8 @@ import java.util.List;
 @AllArgsConstructor
 public class Account {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(precision = 19, scale = 2)
     private BigDecimal balance;
@@ -44,4 +45,10 @@ public class Account {
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transaction> transactions = new ArrayList<>();
+
+    public Account(BigDecimal balance, CurrencyType currency, User user) {
+        this.balance = balance;
+        this.currency = currency;
+        this.user = user;
+    }
 }

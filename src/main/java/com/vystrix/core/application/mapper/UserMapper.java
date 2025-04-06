@@ -17,6 +17,8 @@ public interface UserMapper {
     @Mapping(target = "accounts", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "role", ignore = true)
+    @Mapping(target = "authorities", ignore = true)
     @Mapping(target = "password", expression = "java(encodePassword(dto.password(), passwordEncoder))")
     User toEntity(UserCreateDTO dto, @Context PasswordEncoder passwordEncoder);
 
@@ -27,7 +29,6 @@ public interface UserMapper {
     @Mapping(source = "user.email", target = "email")
     @Mapping(source = "accountDTO.balance", target = "balance")
     @Mapping(source = "accountDTO.currency", target = "currency")
-    @Mapping(source = "user.createdAt", target = "createdAt")
     UserAccountDTO toUserAccountDTO(User user, AccountDTO accountDTO);
 
     default String encodePassword(String password, PasswordEncoder passwordEncoder) {

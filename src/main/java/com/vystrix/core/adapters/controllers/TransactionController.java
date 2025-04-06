@@ -11,6 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
@@ -20,7 +21,7 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @GetMapping("/account/{accountId}")
-    public ResponseEntity<List<TransactionDTO>> getTransactionByAccountId(@PathVariable Long accountId){
+    public ResponseEntity<List<TransactionDTO>> getTransactionByAccountId(@PathVariable UUID accountId){
         return ResponseEntity.ok(transactionService.getTransactionByAccountId(accountId));
     }
 
