@@ -1,7 +1,6 @@
 package com.vystrix.core.application.services;
 
 import com.vystrix.core.application.dto.AuthResponseDTO;
-import com.vystrix.core.application.exception.ForbiddenOperationException;
 import com.vystrix.core.domain.dto.AuthRequestDTO;
 import com.vystrix.core.domain.entities.User;
 import com.vystrix.core.infrastructure.repositories.UserRepository;

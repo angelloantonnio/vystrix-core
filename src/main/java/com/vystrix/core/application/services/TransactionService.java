@@ -1,17 +1,18 @@
 package com.vystrix.core.application.services;
 
 import com.vystrix.core.application.dto.TransactionResponseDTO;
+import com.vystrix.core.application.dto.TransactionSummaryDTO;
 import com.vystrix.core.application.mapper.TransactionMapper;
 import com.vystrix.core.domain.dto.TransactionRequestDTO;
 import com.vystrix.core.domain.entities.Account;
 import com.vystrix.core.domain.entities.Transaction;
 import com.vystrix.core.infrastructure.repositories.AccountRepository;
 import com.vystrix.core.infrastructure.repositories.TransactionRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,6 +43,16 @@ public class TransactionService {
                 .toList();
     }
 
+    public TransactionSummaryDTO getUserTransactionSummary(){
+        String username = authService.getAuthenticatedUsername();
+
+        BigDecimal totalCreditTransactions = transactionRepository.sumCreditByUsername(username);
+        BigDecimal totalDebitTransactions = transactionRepository.sumDebitByUsername(username);
+        BigDecimal netBalance = getNetBalance(totalCreditTransactions, totalDebitTransactions);
+
+        return new TransactionSummaryDTO(totalCreditTransactions, totalDebitTransactions, netBalance);
+    }
+
     @Transactional
     public TransactionResponseDTO createTransaction(TransactionRequestDTO transactionRequestDTO){
         String username = authService.getAuthenticatedUsername();
@@ -61,5 +72,9 @@ public class TransactionService {
         } else if(transactionRequestDTO.transactionType().equals(DEBIT)){
             accountService.debitToAccount(account, transactionRequestDTO.amount());
         }
+    }
+
+    private BigDecimal getNetBalance(BigDecimal credit, BigDecimal debit){
+        return credit.subtract(debit);
     }
 }

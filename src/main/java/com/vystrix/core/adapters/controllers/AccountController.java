@@ -17,8 +17,13 @@ import java.util.UUID;
 public class AccountController {
     private final AccountService accountService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<AccountDTO> getAccountById(@PathVariable UUID id){
         return ResponseEntity.ok(accountService.getAccountById(id));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<AccountDTO> getAccountDetails(){
+        return ResponseEntity.ok(accountService.getUserAccount());
     }
 }

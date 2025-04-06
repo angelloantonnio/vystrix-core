@@ -1,6 +1,7 @@
 package com.vystrix.core.adapters.controllers;
 
 import com.vystrix.core.application.dto.TransactionResponseDTO;
+import com.vystrix.core.application.dto.TransactionSummaryDTO;
 import com.vystrix.core.application.services.TransactionService;
 import com.vystrix.core.domain.dto.TransactionRequestDTO;
 import jakarta.validation.Valid;
@@ -26,8 +27,13 @@ public class TransactionController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<List<TransactionResponseDTO>> getUserTransaction(){
+    public ResponseEntity<List<TransactionResponseDTO>> getTransactionsDetails(){
         return ResponseEntity.ok(transactionService.getUserTransaction());
+    }
+
+    @GetMapping("/summary")
+    public ResponseEntity<TransactionSummaryDTO> getTransactionSummary(){
+        return ResponseEntity.ok(transactionService.getUserTransactionSummary());
     }
 
     @PostMapping

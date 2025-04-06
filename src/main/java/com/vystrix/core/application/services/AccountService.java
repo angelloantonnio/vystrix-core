@@ -7,7 +7,6 @@ import com.vystrix.core.domain.entities.Account;
 import com.vystrix.core.domain.entities.User;
 import com.vystrix.core.domain.enums.CurrencyType;
 import com.vystrix.core.infrastructure.repositories.AccountRepository;
-import com.vystrix.core.infrastructure.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,11 +20,17 @@ import java.util.UUID;
 public class AccountService {
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
+    private final AuthService authService;
 
     public AccountDTO getAccountById(UUID id){
         return accountRepository.findById(id)
                 .map(accountMapper::toDTO)
                 .orElseThrow(() -> new EntityNotFoundException("Conta não encontrada!"));
+    }
+
+    public AccountDTO getUserAccount(){
+        String username = authService.getAuthenticatedUsername();
+        return accountMapper.toDTO(accountRepository.findAccountByUsername(username));
     }
 
     @Transactional

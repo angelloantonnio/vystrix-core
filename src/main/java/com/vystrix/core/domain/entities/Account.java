@@ -1,6 +1,5 @@
 package com.vystrix.core.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vystrix.core.domain.enums.CurrencyType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

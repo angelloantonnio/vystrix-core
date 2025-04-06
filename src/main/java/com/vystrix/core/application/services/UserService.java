@@ -6,7 +6,6 @@ import com.vystrix.core.application.dto.UserDTO;
 import com.vystrix.core.application.mapper.UserMapper;
 import com.vystrix.core.domain.dto.UserCreateDTO;
 import com.vystrix.core.domain.entities.User;
-import com.vystrix.core.domain.enums.UserRole;
 import com.vystrix.core.infrastructure.repositories.UserRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -28,9 +27,17 @@ public class UserService {
     private final AccountService accountService;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final AuthService authService;
 
     public UserDTO getUserById(UUID id){
         return userRepository.findById(id)
+                .map(userMapper::toDTO)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado!"));
+    }
+
+    public UserDTO getUserDetails(){
+        String username = authService.getAuthenticatedUsername();
+        return userRepository.findByEmail(username)
                 .map(userMapper::toDTO)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado!"));
     }

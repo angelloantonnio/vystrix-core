@@ -24,7 +24,6 @@ public interface UserMapper {
 
     UserDTO toDTO(User user);
 
-    @Mapping(source = "user.id", target = "id")
     @Mapping(source = "user.name", target = "name")
     @Mapping(source = "user.email", target = "email")
     @Mapping(source = "accountDTO.balance", target = "balance")
