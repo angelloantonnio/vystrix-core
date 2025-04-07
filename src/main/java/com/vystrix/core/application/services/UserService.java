@@ -5,6 +5,7 @@ import com.vystrix.core.application.dto.UserAccountDTO;
 import com.vystrix.core.application.dto.UserDTO;
 import com.vystrix.core.application.mapper.UserMapper;
 import com.vystrix.core.domain.dto.UserCreateDTO;
+import com.vystrix.core.domain.dto.UserUpdateDTO;
 import com.vystrix.core.domain.entities.User;
 import com.vystrix.core.infrastructure.repositories.UserRepository;
 import jakarta.persistence.EntityExistsException;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.vystrix.core.domain.enums.UserRole.USER;
@@ -57,7 +59,42 @@ public class UserService {
         return userMapper.toUserAccountDTO(savedUser, accountDTO);
     }
 
+    public UserDTO updateUser(UserUpdateDTO userUpdateDTO){
+        if((userUpdateDTO.name() == null || userUpdateDTO.name().isBlank()) &&
+                (userUpdateDTO.password() == null || userUpdateDTO.password().isBlank())){
+            throw new IllegalArgumentException("Você precisa informar ao menos um campo para atualizar");
+        }
+
+        String username = authService.getAuthenticatedUsername();
+
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado!"));
+
+        User newUser = userRepository.save(buildUpdatedUser(user, userUpdateDTO));
+
+        return userMapper.toDTO(newUser);
+    }
+
+    public void deleteUser(){
+        String username = authService.getAuthenticatedUsername();
+        userRepository.delete(userRepository.findByEmail(username)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado!")));
+    }
+
     private void assignDefaultRole(User user){
         user.setRole(USER);
+    }
+
+    private User buildUpdatedUser(User oldUser, UserUpdateDTO userUpdateDTO){
+        Optional.ofNullable(userUpdateDTO.name())
+                .filter(name -> !name.isBlank())
+                .ifPresent(oldUser::setName);
+
+        Optional.ofNullable(userUpdateDTO.password())
+                .filter(password -> !password.isBlank())
+                .map(passwordEncoder::encode)
+                .ifPresent(oldUser::setPassword);
+
+        return oldUser;
     }
 }

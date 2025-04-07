@@ -29,7 +29,7 @@ public class User implements UserDetails {
     @Column(unique = true, nullable = false)
     private UUID id;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(nullable = false)
     private Account account;
 

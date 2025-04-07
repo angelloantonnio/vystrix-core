@@ -4,6 +4,7 @@ import com.vystrix.core.application.dto.UserAccountDTO;
 import com.vystrix.core.application.dto.UserDTO;
 import com.vystrix.core.application.services.UserService;
 import com.vystrix.core.domain.dto.UserCreateDTO;
+import com.vystrix.core.domain.dto.UserUpdateDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,18 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserAccountDTO> createUser(@Valid @RequestBody UserCreateDTO userCreateDTO){
+    public ResponseEntity<UserAccountDTO> createUser(@RequestBody @Valid UserCreateDTO userCreateDTO){
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(userCreateDTO));
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<UserDTO> updateUser(@RequestBody @Valid UserUpdateDTO userUpdateDTO){
+        return ResponseEntity.ok(userService.updateUser(userUpdateDTO));
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteUser(){
+        userService.deleteUser();
+        return ResponseEntity.noContent().build();
     }
 }

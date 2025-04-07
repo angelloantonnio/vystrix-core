@@ -4,6 +4,7 @@ import com.vystrix.core.application.dto.AccountDTO;
 import com.vystrix.core.application.dto.UserAccountDTO;
 import com.vystrix.core.application.dto.UserDTO;
 import com.vystrix.core.domain.dto.UserCreateDTO;
+import com.vystrix.core.domain.dto.UserUpdateDTO;
 import com.vystrix.core.domain.entities.User;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
